@@ -66,7 +66,7 @@ ax.axis('off') #desactiva los rotulos numeras al costado de cada eje
 
 
 
-img=mpimg.imread('/home/anele/Descargas/calavera.jpg')
+img=mpimg.imread('static/calavera.jpg')
 img=convertirBinaria(img)
 
 
