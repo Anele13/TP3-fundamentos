@@ -40,19 +40,18 @@ def vecindario(b):
 
 def convertirBinaria(img):
     buffer_b = img.copy() # Hacemos una copia de la matriz
-    for i in range(buffer_b.shape[0]):
+    '''for i in range(buffer_b.shape[0]):
         for j in range(buffer_b.shape[1]):
             if buffer_b[i, j]== 255:
                 buffer_b[i, j] = 0
             else:
                 buffer_b[i,j]=255
-
+    '''
     vecinos=vecindario(buffer_b)
     for i in range(buffer_b.shape[0]): #ensucia la imagen con puntos individuales aleatorios para poder limpiar despues
         for x in range(0,14):
             j =random.randint(0, 449)
-            if vecinos[i,j]==0:
-                buffer_b[i,j]=255
+            buffer_b[i,j]=0
     return buffer_b
 
 
@@ -67,52 +66,36 @@ ax.axis('off') #desactiva los rotulos numeras al costado de cada eje
 
 
 img=mpimg.imread('static/calavera.jpg')
+#img=convertirBinaria(img)
 img=convertirBinaria(img)
+imagen = ax.imshow(img, interpolation="none", cmap="gray")#interpolation es la nitidez de los cuadros negros y map es el color
+j=0
 
 
 #img = np.zeros((8, 8), dtype=int)
 
 # Añadimos una nave
-'''img[1, 2] = 255
-img[2, 1] = 255
-img[3, 2] = 255
-img[7,7]=255'''
-
-
-imagen = ax.imshow(img, interpolation="none", cmap=cm.gray_r)#interpolation es la nitidez de los cuadros negros y map es el color
-j=0
-
 def paso(img):
-    #global j
+    global j
     v = vecindario(img)
     buffer_b = img.copy() # Hacemos una copia de la matriz
     for i in range(buffer_b.shape[0]):
-        for j in range(buffer_b.shape[1]):
-            if v[i, j]<=4 and buffer_b[i,j]==255:
-                buffer_b[i, j] = 0
-    '''j=j+1
-    if j == len(buffer_b):
-        j=0'''
+        if i==0:
+            buffer_b[i,j]= np.median([buffer_b[i,j],  buffer_b[i+1,j], buffer_b[i+2,j] ])
+            print("sali")
+        else:
+            if i==449:
+                buffer_b[i,j]= np.median([  buffer_b[i,j],  buffer_b[i-1,j],  buffer_b[i-2,j]  ])
+            else:
+                buffer_b[i,j]= np.median([  buffer_b[i,j],   buffer_b[i+1,j],  buffer_b[i-1,j]  ])
+    j=j+1
+    if j==450:
+        j=0
     return buffer_b
 
 
 def animacion(nada):
     global img
-    ''''if img[15,15]:
-        print("si")
-        img[15,15]=0
-        img[16,15]=0
-        img[16,15]=0
-        img[18,15]=0
-        img[19,15]=0
-    else:
-        print("No")
-        img[15,15]=255
-        img[16,15]=255
-        img[16,15]=255
-        img[18,15]=255
-        img[19,15]=255
-    imagen.set_data(img)'''
     img=paso(img)
     imagen.set_data(img)
 
