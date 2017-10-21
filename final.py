@@ -27,7 +27,6 @@ class Celula():
         self.color=color
 
     def cambiar_color(self, vecinos):
-        print(self.fila, self.columna)
         lista_colores_vecinos=[]
         for i in range(-1,2):
             for j in range(-1,2):
@@ -46,18 +45,18 @@ def crear_celulas():
     return matriz_celular
 
 
-matriz_celular=crear_celulas()
-matriz_colores=np.empty((450,450), dtype=int)
+if __name__ == '__main__':
+    matriz_celular=crear_celulas()
+    matriz_colores=np.empty((450,450), dtype=int)
 
-for x in range(0,449):
-    for z in range(0,449):
-        celula= matriz_celular[x,z]
-        celula.cambiar_color(matriz_celular)
-        matriz_colores[celula.get_fila(), celula.get_columna()]= celula.get_color()
-    print(x,z)
+    for x in range(0,449):
+        for z in range(0,449):
+            celula= matriz_celular[x,z]
+            celula.cambiar_color(matriz_celular)
+            matriz_colores[celula.get_fila(), celula.get_columna()]= celula.get_color()
+            print(x,z)
 
-
-fig = plt.figure()
-ax = fig.add_subplot(111)
-imagen = ax.imshow(toimage(matriz_colores), interpolation="none", cmap="gray")
-plt.show()
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    imagen = ax.imshow(toimage(matriz_colores), interpolation="none", cmap="gray")
+    plt.show()
