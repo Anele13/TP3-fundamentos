@@ -55,6 +55,7 @@ if __name__ == '__main__':
             celula.cambiar_color(matriz_celular)
             matriz_colores[celula.get_fila(), celula.get_columna()]= celula.get_color()
             print(x,z)
+            print("hola")
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
