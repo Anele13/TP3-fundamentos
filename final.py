@@ -51,8 +51,10 @@ if __name__ == '__main__':
 
     for x in range(0,449):
         for z in range(0,449):
+            #reemplazar for por itertools 
             celula= matriz_celular[x,z]
             celula.cambiar_color(matriz_celular)
+            #agregar el buffer
             matriz_colores[celula.get_fila(), celula.get_columna()]= celula.get_color()
             print(x,z)
 
