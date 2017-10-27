@@ -83,7 +83,10 @@ if __name__ == '__main__':
     ani = animation.FuncAnimation(fig, animacion)
     plt.show()
 
-
+##
+##
+### ALGO
+##
 
     '''import numpy as np
     import matplotlib.pyplot as plt
