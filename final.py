@@ -78,12 +78,13 @@ if __name__ == '__main__':
     a.set_title('Antes')
     a=fig.add_subplot(1,2,2)
     a.set_title('Despues')
-    print("hoa-----------------------")
     plt.imshow(toimage(matriz_colores), interpolation="none", cmap="gray")
     ani = animation.FuncAnimation(fig, animacion)
     plt.show()
 
-
+#asd
+#sdad
+#asdasd
 
     '''import numpy as np
     import matplotlib.pyplot as plt
