@@ -82,9 +82,16 @@ if __name__ == '__main__':
     ani = animation.FuncAnimation(fig, animacion)
     plt.show()
 
+<<<<<<< HEAD
 #asd
 #sdad
 #asdasd
+=======
+##
+##
+### ALGO
+##
+>>>>>>> refs/remotes/origin/master
 
     '''import numpy as np
     import matplotlib.pyplot as plt
