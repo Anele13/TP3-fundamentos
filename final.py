@@ -1,4 +1,4 @@
-# coding: utf-8
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
@@ -7,7 +7,27 @@ import matplotlib.image as mpimg
 import os
 from scipy.misc import toimage
 import itertools
+from matplotlib.widgets import Button
+def funcion_next():
+    for x in itertools.product(range(matriz_celular.shape[1]-1), repeat=2):
+            celula= matriz_celular[x]
+            celula.cambiar_color(matriz_celular)
 
+    for x in itertools.product(range(matriz_celular.shape[1]-1), repeat=2):
+            celula=matriz_celular[x]
+            matriz_colores[celula.get_fila(), celula.get_columna()]= celula.get_buffer()
+            celula.color=celula.get_buffer()
+
+    plt.imshow(toimage(matriz_colores), interpolation="none", cmap="gray")
+class Index(object):
+    ind = 0
+
+    def next(self, event):
+        funcion_next()
+        
+
+    def prev(self, event):
+        a = 0
 class Celula():
     fila=0
     columna=0
@@ -59,17 +79,34 @@ def animacion(fig):
             celula.color=celula.get_buffer()
 
     plt.imshow(toimage(matriz_colores), interpolation="none", cmap="gray")
+'''
+def funcion(img):
+    print("entre a la funcion")
+    matriz_celular=crear_celulas(img)
+    matriz_colores=np.empty((matriz_celular.shape[0],matriz_celular.shape[1]), dtype=int)
 
+    callback = Index()
+    axprev = plt.axes([0.1, 0.05, 0.1, 0.075])
+    axnext = plt.axes([0.81, 0.05, 0.1, 0.075])
+    bnext = Button(axnext, 'Siguiente')
+    bnext.on_clicked(callback.next)
+    bprev = Button(axprev, 'Anterior')
+    bprev.on_clicked(callback.prev)
+    print("llame a la funcion")
+    plt.show()
+    print("llamo a la funcion")
+'''
 
 
 if __name__ == '__main__':
     os.walk('/')
     img=mpimg.imread('static/calavera.jpg')
-
-
     matriz_celular=crear_celulas(img)
     matriz_colores=np.empty((matriz_celular.shape[0],matriz_celular.shape[1]), dtype=int)
+    
 
+    callback = Index()
+    
     fig = plt.figure()
     a=fig.add_subplot(1,2,1)
     img = mpimg.imread('static/calavera.jpg')
@@ -79,57 +116,17 @@ if __name__ == '__main__':
     a=fig.add_subplot(1,2,2)
     a.set_title('Despues')
     plt.imshow(toimage(matriz_colores), interpolation="none", cmap="gray")
-    ani = animation.FuncAnimation(fig, animacion)
-    plt.show()
+    #ani = animation.FuncAnimation(fig, animacion)
+    #plt.show()
 
-<<<<<<< HEAD
-#asd
-#sdad
-#asdasd
-=======
-##
-##
-### ALGO
-##
->>>>>>> refs/remotes/origin/master
-
-    '''import numpy as np
-    import matplotlib.pyplot as plt
-    from matplotlib.widgets import Button
-
-    freqs = np.arange(2, 20, 3)
-
-    fig, ax = plt.subplots()
-    plt.subplots_adjust(bottom=0.2)
-    t = np.arange(0.0, 1.0, 0.001)
-    s = np.sin(2*np.pi*freqs[0]*t)
-    l, = plt.plot(t, s, lw=2)
-
-
-    class Index(object):
-        ind = 0
-
-        def next(self, event):
-            self.ind += 1
-            i = self.ind % len(freqs)
-            ydata = np.sin(2*np.pi*freqs[i]*t)
-            l.set_ydata(ydata)
-            plt.draw()
-
-        def prev(self, event):
-            self.ind -= 1
-            i = self.ind % len(freqs)
-            ydata = np.sin(2*np.pi*freqs[i]*t)
-            l.set_ydata(ydata)
-            plt.draw()
-
-    callback = Index()
-    axprev = plt.axes([0.7, 0.05, 0.1, 0.075])
+    
+    axprev = plt.axes([0.1, 0.05, 0.1, 0.075])
     axnext = plt.axes([0.81, 0.05, 0.1, 0.075])
-    bnext = Button(axnext, 'Next')
+    bnext = Button(axnext, 'Siguiente')
     bnext.on_clicked(callback.next)
-    bprev = Button(axprev, 'Previous')
+    bprev = Button(axprev, 'Anterior')
     bprev.on_clicked(callback.prev)
-
     plt.show()
-    '''
+
+    #funcion(img)
+
