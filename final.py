@@ -10,6 +10,25 @@ import itertools
 from matplotlib.widgets import Button
 import easygui
 
+class Evento (object):
+    def avanzar(self, event):
+        for x in itertools.product(range(matriz_celular.shape[1]-1), repeat=2):
+                celula= matriz_celular[x]
+                celula.cambiar_color(matriz_celular)
+
+        for x in itertools.product(range(matriz_celular.shape[1]-1), repeat=2):
+                celula=matriz_celular[x]
+                matriz_colores[celula.get_fila(), celula.get_columna()]= celula.get_buffer()
+                celula.colores_previos.append(celula.get_color())
+                celula.color=celula.get_buffer()
+
+        plt.imshow(toimage(matriz_colores), interpolation="none", cmap="gray")
+
+    def retroceder(self, event):
+        for x in itertools.product(range(matriz_celular.shape[1]-1), repeat=2):
+                celula= matriz_celular[x]
+                matriz_colores[x]=celula.get_color_anterior()
+        plt.imshow(toimage(matriz_colores), interpolation="none", cmap="gray")
 
 
 class Celula():
@@ -61,29 +80,6 @@ def crear_celulas(img):
     return matriz_celular
 
 
-class Evento (object):
-    def avanzar(self, event):
-        for x in itertools.product(range(matriz_celular.shape[1]-1), repeat=2):
-                celula= matriz_celular[x]
-                celula.cambiar_color(matriz_celular)
-
-        for x in itertools.product(range(matriz_celular.shape[1]-1), repeat=2):
-                celula=matriz_celular[x]
-                matriz_colores[celula.get_fila(), celula.get_columna()]= celula.get_buffer()
-                celula.colores_previos.append(celula.get_color())
-                celula.color=celula.get_buffer()
-
-        plt.imshow(toimage(matriz_colores), interpolation="none", cmap="gray")
-
-    def retroceder(self, event):
-        for x in itertools.product(range(matriz_celular.shape[1]-1), repeat=2):
-                celula= matriz_celular[x]
-                matriz_colores[x]=celula.get_color_anterior()
-        plt.imshow(toimage(matriz_colores), interpolation="none", cmap="gray")
-
-
-
-
 
 if __name__ == '__main__':
 
@@ -109,7 +105,5 @@ if __name__ == '__main__':
     bprev = Button(plt.axes([0.1, 0.05, 0.1, 0.075]), 'Retroceder')
     bprev.on_clicked(e.retroceder)
 
-
     plt.axes(fig.get_axes()[1])
-
     plt.show()
