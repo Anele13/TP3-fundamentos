@@ -8,31 +8,16 @@ import os
 from scipy.misc import toimage
 import itertools
 from matplotlib.widgets import Button
-def funcion_next():
-    for x in itertools.product(range(matriz_celular.shape[1]-1), repeat=2):
-            celula= matriz_celular[x]
-            celula.cambiar_color(matriz_celular)
+import easygui
 
-    for x in itertools.product(range(matriz_celular.shape[1]-1), repeat=2):
-            celula=matriz_celular[x]
-            matriz_colores[celula.get_fila(), celula.get_columna()]= celula.get_buffer()
-            celula.color=celula.get_buffer()
 
-    plt.imshow(toimage(matriz_colores), interpolation="none", cmap="gray")
-class Index(object):
-    ind = 0
 
-    def next(self, event):
-        funcion_next()
-        
-
-    def prev(self, event):
-        a = 0
 class Celula():
     fila=0
     columna=0
     buff=0
     color=0
+    colores_previos=[]
 
     def get_fila(self):
         return self.fila
@@ -59,74 +44,72 @@ class Celula():
                 lista_colores_vecinos.append(vecinos[fila_vecino, columna_vecino].get_color())
         self.buff=np.median(lista_colores_vecinos)
 
+    def get_color_anterior(self):
+        try:
+            return self.colores_previos.pop()
+        except IndexError:
+            pass
+
 
 def crear_celulas(img):
     matriz_celular=np.empty((img.shape[0],img.shape[1]), dtype=object)
     for i in range(img.shape[0]):
         for j in range(img.shape[1]):
-            matriz_celular[i,j]=Celula(fila=i,columna=j,color=img[i,j][0])
+            celula=Celula(fila=i,columna=j,color=img[i,j][0])
+            celula.colores_previos.append(img[i,j][0])
+            matriz_celular[i,j]=celula
     return matriz_celular
 
 
-def animacion(fig):
-    for x in itertools.product(range(matriz_celular.shape[1]-1), repeat=2):
-            celula= matriz_celular[x]
-            celula.cambiar_color(matriz_celular)
+class Evento (object):
+    def avanzar(self, event):
+        for x in itertools.product(range(matriz_celular.shape[1]-1), repeat=2):
+                celula= matriz_celular[x]
+                celula.cambiar_color(matriz_celular)
 
-    for x in itertools.product(range(matriz_celular.shape[1]-1), repeat=2):
-            celula=matriz_celular[x]
-            matriz_colores[celula.get_fila(), celula.get_columna()]= celula.get_buffer()
-            celula.color=celula.get_buffer()
+        for x in itertools.product(range(matriz_celular.shape[1]-1), repeat=2):
+                celula=matriz_celular[x]
+                matriz_colores[celula.get_fila(), celula.get_columna()]= celula.get_buffer()
+                celula.colores_previos.append(celula.get_color())
+                celula.color=celula.get_buffer()
 
-    plt.imshow(toimage(matriz_colores), interpolation="none", cmap="gray")
-'''
-def funcion(img):
-    print("entre a la funcion")
-    matriz_celular=crear_celulas(img)
-    matriz_colores=np.empty((matriz_celular.shape[0],matriz_celular.shape[1]), dtype=int)
+        plt.imshow(toimage(matriz_colores), interpolation="none", cmap="gray")
 
-    callback = Index()
-    axprev = plt.axes([0.1, 0.05, 0.1, 0.075])
-    axnext = plt.axes([0.81, 0.05, 0.1, 0.075])
-    bnext = Button(axnext, 'Siguiente')
-    bnext.on_clicked(callback.next)
-    bprev = Button(axprev, 'Anterior')
-    bprev.on_clicked(callback.prev)
-    print("llame a la funcion")
-    plt.show()
-    print("llamo a la funcion")
-'''
+    def retroceder(self, event):
+        for x in itertools.product(range(matriz_celular.shape[1]-1), repeat=2):
+                celula= matriz_celular[x]
+                matriz_colores[x]=celula.get_color_anterior()
+        plt.imshow(toimage(matriz_colores), interpolation="none", cmap="gray")
+
+
+
 
 
 if __name__ == '__main__':
-    os.walk('/')
-    img=mpimg.imread('static/calavera.jpg')
+
+    img = mpimg.imread(easygui.fileopenbox())
     matriz_celular=crear_celulas(img)
     matriz_colores=np.empty((matriz_celular.shape[0],matriz_celular.shape[1]), dtype=int)
-    
 
-    callback = Index()
-    
+    e = Evento()
     fig = plt.figure()
+
     a=fig.add_subplot(1,2,1)
-    img = mpimg.imread('static/calavera.jpg')
-    lum_img = img[:,:,0]
-    imagen = plt.imshow(lum_img, interpolation="none", cmap="gray")
+    plt.imshow(img, interpolation="none", cmap="gray")
     a.set_title('Antes')
+
     a=fig.add_subplot(1,2,2)
     a.set_title('Despues')
     plt.imshow(toimage(matriz_colores), interpolation="none", cmap="gray")
-    #ani = animation.FuncAnimation(fig, animacion)
-    #plt.show()
 
-    
-    axprev = plt.axes([0.1, 0.05, 0.1, 0.075])
-    axnext = plt.axes([0.81, 0.05, 0.1, 0.075])
-    bnext = Button(axnext, 'Siguiente')
-    bnext.on_clicked(callback.next)
-    bprev = Button(axprev, 'Anterior')
-    bprev.on_clicked(callback.prev)
+
+    bnext = Button(plt.axes([0.81, 0.05, 0.1, 0.075]), 'Avanzar')
+    bnext.on_clicked(e.avanzar)
+
+    bprev = Button(plt.axes([0.1, 0.05, 0.1, 0.075]), 'Retroceder')
+    bprev.on_clicked(e.retroceder)
+
+
+    plt.axes(fig.get_axes()[1])
+
     plt.show()
-
-    #funcion(img)
-
