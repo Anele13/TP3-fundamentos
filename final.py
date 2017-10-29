@@ -1,4 +1,6 @@
 
+import easygui
+#import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
@@ -8,10 +10,22 @@ import os
 from scipy.misc import toimage
 import itertools
 from matplotlib.widgets import Button
-import easygui
-
+'''
+def rotar_imagen(matriz_imagen):
+	for x in itertools.product(range(matriz_imagen.shape[0]-1),range(matriz_imagen.shape[1]-1)):
+			
+			celula = matriz_celular[x]
+			
+			aux0=matriz_imagen.shape[0]
+			#aux1=matriz_imagen.shape[1]
+			#print("aux0,aux1")
+			celula.fila = aux0[1]-celula.get_fila()
+			#celula.columna = aux1[1]-celula.get_columna()
+	print("salgo de la funcion")
+	return matriz_imagen
+'''
 class Evento (object):
-    def avanzar(self, event):
+    def avanzar(self, event): 
         for x in itertools.product(range(matriz_celular.shape[0]-1),range(matriz_celular.shape[1]-1)):
                 celula= matriz_celular[x]
                 celula.cambiar_color(matriz_celular)
@@ -21,15 +35,24 @@ class Evento (object):
                 matriz_colores[celula.get_fila(), celula.get_columna()]= celula.get_buffer()
                 celula.colores_previos.append(celula.get_color())
                 celula.color=celula.get_buffer()
-
+        print("termine iteraciones")
         plt.imshow(toimage(matriz_colores), interpolation="none", cmap="gray")
-
+        print("ya plotie(siguiente)")
+    
     def retroceder(self, event):
-        for x in itertools.product(range(matriz_celular.shape[0]-1),range(matriz_celular.shape[1]-1)):
-                celula= matriz_celular[x]
-                matriz_colores[x]=celula.get_color_anterior()
-        plt.imshow(toimage(matriz_colores), interpolation="none", cmap="gray")
+    	aux_filas = matriz_celular.shape[0]
+    	aux_columnas = matriz_celular.shape[1]
+    	for x in itertools.product(range(matriz_celular.shape[0]-1),range(matriz_celular.shape[1]-1)):
+    			celula = matriz_celular[x]
+    			if len(celula.colores_previos)>0:
+    				matriz_colores[x]=celula.get_color_anterior()
+    		
 
+
+    	print("termine iteraciones")
+    	#matriz_colores=rotar_imagen(matriz_colores)
+    	plt.imshow(toimage(matriz_colores), interpolation = "none", cmap="gray")
+    	print("ya plotie(anterior)")
 
 class Celula():
     fila=0
@@ -67,7 +90,7 @@ class Celula():
         try:
             return self.colores_previos.pop()
         except IndexError:
-            pass
+            return 0
 
 
 def crear_celulas(img):
@@ -79,10 +102,7 @@ def crear_celulas(img):
             matriz_celular[i,j]=celula
     return matriz_celular
 
-
-
 if __name__ == '__main__':
-
     img = mpimg.imread(easygui.fileopenbox())
     matriz_celular=crear_celulas(img)
     matriz_colores=np.empty((matriz_celular.shape[0],matriz_celular.shape[1]), dtype=int)
@@ -102,8 +122,9 @@ if __name__ == '__main__':
     bnext = Button(plt.axes([0.81, 0.05, 0.1, 0.075]), 'Avanzar')
     bnext.on_clicked(e.avanzar)
 
-    bprev = Button(plt.axes([0.1, 0.05, 0.1, 0.075]), 'Retroceder')
+    bprev = Button(plt.axes([0.1, 0.05, 0.15, 0.075]), 'Retroceder')
     bprev.on_clicked(e.retroceder)
 
     plt.axes(fig.get_axes()[1])
     plt.show()
+
