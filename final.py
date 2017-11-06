@@ -1,6 +1,5 @@
 
 import easygui
-#import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
@@ -73,14 +72,14 @@ def crear_celulas(img):
     for i in range(img.shape[0]):
         for j in range(img.shape[1]):
             celula=Celula(fila=i,columna=j,color=img[i,j][0])
-            celula.colores_previos.append(img[i,j][0])
+            celula.colores_previos.append(celula.get_color())
             matriz_celular[i,j]=celula
     return matriz_celular
 
 if __name__ == '__main__':
     img = mpimg.imread(easygui.fileopenbox())
     matriz_celular=crear_celulas(img)
-    matriz_colores=np.empty((matriz_celular.shape[0],matriz_celular.shape[1]), dtype=int)
+    matriz_colores=np.empty((matriz_celular.shape[0],matriz_celular.shape[1]),dtype=int)
 
     e = Evento()
     fig = plt.figure()
@@ -101,4 +100,5 @@ if __name__ == '__main__':
     bprev.on_clicked(e.retroceder)
 
     plt.axes(fig.get_axes()[1])
+
     plt.show()
